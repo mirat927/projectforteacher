@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>День учителя — 6 «К»</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: white;
+    background:
+        radial-gradient(circle at top, #432080 0%, #17132e 42%, #090914 100%);
+    overflow-x: hidden;
+}
+
+.screen {
+    display: none;
+    min-height: 100vh;
+    padding: 35px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.screen.active {
+    display: flex;
+}
+
+h1 {
+    font-size: clamp(42px, 7vw, 82px);
+    margin: 10px 0;
+}
+
+h2 {
+    font-size: clamp(30px, 5vw, 55px);
+    margin: 10px 0 25px;
+}
+
+p {
+    font-size: 21px;
+    line-height: 1.5;
+    max-width: 850px;
+}
+
+.subtitle {
+    color: #d8c9ff;
+    font-size: 24px;
+}
+
+.card {
+    width: min(900px, 95%);
+    padding: 35px;
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 25px;
+    background: rgba(255,255,255,.08);
+    box-shadow: 0 15px 50px rgba(0,0,0,.35);
+}
+
+button {
+    border: 0;
+    border-radius: 15px;
+    padding: 16px 25px;
+    margin: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(135deg,#7b3ff2,#b45cff);
+    transition: .15s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+.secondary {
+    background: rgba(255,255,255,.12);
+}
+
+.big-button {
+    font-size: 22px;
+    padding: 20px 40px;
+    margin-top: 25px;
+}
+
+.message {
+    display: none;
+    margin-top: 25px;
+    padding: 25px;
+    border-radius: 18px;
+    background: rgba(255,255,255,.1);
+    font-size: 22px;
+    line-height: 1.6;
+}
+
+.message.show {
+    display: block;
+}
+
+.phrase {
+    padding: 18px;
+    margin: 10px auto;
+    max-width: 650px;
+    border-radius: 15px;
+    background: rgba(255,255,255,.08);
+    font-size: 22px;
+}
+
+.names {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 25px 0;
+}
+
+.name {
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.1);
+}
+
+.progress {
+    width: min(800px,90%);
+    height: 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.15);
+    margin: 10px auto 25px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #c084fc;
+    transition: .3s;
+}
+
+.question-number {
+    color: #c9b4ff;
+    font-size: 18px;
+}
+
+.question {
+    font-size: 27px;
+    line-height: 1.4;
+    margin: 20px auto 30px;
+    max-width: 900px;
+}
+
+.answers {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    gap: 12px;
+    max-width: 850px;
+    width: 100%;
+}
+
+.answer {
+    width: 100%;
+    min-height: 70px;
+    margin: 0;
+    background: rgba(255,255,255,.1);
+}
+
+.answer.correct {
+    background: #16834d;
+}
+
+.answer.wrong {
+    background: #a52b42;
+}
+
+.feedback {
+    min-height: 30px;
+    margin: 18px;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.score {
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+.situation {
+    font-size: 25px;
+    line-height: 1.5;
+    padding: 25px;
+    background: rgba(255,255,255,.07);
+    border-radius: 18px;
+    margin-bottom: 20px;
+}
+
+.final-score {
+    font-size: 45px;
+    font-weight: bold;
+    color: #d5b5ff;
+}
+
+.confetti {
+    position: fixed;
+    top: -20px;
+    width: 8px;
+    height: 14px;
+    animation: fall 2.5s linear forwards;
+    pointer-events: none;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(110vh) rotate(720deg);
+    }
+}
+
+.small {
+    font-size: 16px;
+    opacity: .7;
+}
+
+@media(max-width:700px) {
+    .screen {
+        padding: 20px;
+    }
+
+    .answers {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 22px;
+    }
+
+    p {
+        font-size: 18px;
+    }
+
+    .question {
+        font-size: 22px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ГЛАВНЫЙ ЭКРАН -->
+<section id="home" class="screen active">
+    <div class="card">
+        <div class="subtitle">6 «К» представляет</div>
+        <h1>С Днём учителя!</h1>
+        <p>
+            Сегодня не обычный школьный день.<br>
+            Сегодня главный человек — наш учитель.
+        </p>
+        <button class="big-button" onclick="show('greeting')">
+            Начать праздник
+        </button>
+    </div>
+</section>
+
+
+<!-- ПОЗДРАВЛЕНИЕ -->
+<section id="greeting" class="screen">
+    <div class="card">
+        <h2>💌 Поздравление от 6 «К»</h2>
+
+        <p>
+            Учитель — это человек, который каждый день помогает нам
+            становиться умнее, увереннее и сильнее.
+        </p>
+
+        <button onclick="showMessage('greetingText')">
+            Открыть поздравление
+        </button>
+
+        <div id="greetingText" class="message">
+            Спасибо Вам за знания, терпение и поддержку.
+            <br><br>
+            За то, что объясняете даже тогда, когда мы не сразу понимаем.
+            За то, что верите в нас и помогаете нам двигаться дальше.
+            <br><br>
+            <b>С Днём учителя! ❤️</b>
+        </div>
+
+        <br>
+        <button class="secondary" onclick="show('words')">
+            Дальше →
+        </button>
+    </div>
+</section>
+
+
+<!-- СЛОВО КЛАССУ -->
+<section id="words" class="screen">
+    <div class="card">
+        <h2>🎤 Слово класса</h2>
+
+        <div class="phrase">Спасибо за терпение.</div>
+        <div class="phrase">Спасибо за знания.</div>
+        <div class="phrase">Спасибо за поддержку.</div>
+        <div class="phrase">Спасибо за то, что верите в нас.</div>
+
+        <button onclick="showMessage('classText')">
+            А теперь главное...
+        </button>
+
+        <div id="classText" class="message">
+            Мы можем шуметь, спорить, иногда забывать домашнее задание...
+            <br><br>
+            Но мы действительно ценим всё, что Вы для нас делаете.
+            <br><br>
+            <b>От всего 6 «К» — большое спасибо!</b>
+        </div>
+
+        <br>
+        <button class="secondary" onclick="show('quizIntro')">
+            Начать испытание →
+        </button>
+    </div>
+</section>
+
+
+<!-- ВСТУПЛЕНИЕ К ВИКТОРИНЕ -->
+<section id="quizIntro" class="screen">
+    <div class="card">
+        <h2>🧠 Учитель VS 6 «К»</h2>
+
+        <p>
+            Сейчас проверим, насколько хорошо Вы знаете свой класс.
+        </p>
+
+        <p>
+            Здесь недостаточно просто помнить фамилии.
+            Нужно понимать характер каждого ученика.
+        </p>
+
+        <p><b>14 вопросов. Ошибаться нельзя. 😈</b></p>
+
+        <button class="big-button" onclick="startQuiz()">
+            Начать викторину
+        </button>
+    </div>
+</section>
+
+
+<!-- ВИКТОРИНА -->
+<section id="quiz" class="screen">
+    <div class="card">
+
+        <div class="question-number" id="questionNumber"></div>
+
+        <div class="progress">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+
+        <div class="score">
+            Очки: <span id="score">0</span>
+        </div>
+
+        <div id="question" class="question"></div>
+
+        <div id="answers" class="answers"></div>
+
+        <div id="feedback" class="feedback"></div>
+
+        <button id="nextButton" style="display:none"
+                onclick="nextQuestion()">
+            Следующий вопрос →
+        </button>
+
+    </div>
+</section>
+
+
+<!-- СИТУАЦИИ -->
+<section id="situations" class="screen">
+    <div class="card">
+        <h2>😂 Угадайте школьную ситуацию</h2>
+
+        <div id="situationBox" class="situation">
+            Учитель заходит в класс и видит подозрительно тихих учеников.
+            Что, скорее всего, происходит?
+        </div>
+
+        <button onclick="situationAnswer(false)">
+            Все идеально подготовились
+        </button>
+
+        <button onclick="situationAnswer(true)">
+            Все резко сделали вид, что были заняты делом
+        </button>
+
+        <button onclick="situationAnswer(false)">
+            Класс медитирует
+        </button>
+
+        <div id="situationResult" class="feedback"></div>
+
+        <button id="situationNext"
+                style="display:none"
+                onclick="nextSituation()">
+            Следующая ситуация →
+        </button>
+    </div>
+</section>
+
+
+<!-- ФИНАЛЬНОЕ ИСПЫТАНИЕ -->
+<section id="finalTest" class="screen">
+    <div class="card">
+        <h2>🏆 Финальное испытание</h2>
+
+        <p>
+            Последний вопрос.
+            <br>
+            Он не про оценки.
+        </p>
+
+        <div class="situation">
+            Что делает класс настоящим классом?
+        </div>
+
+        <button onclick="finishFinal()">
+            Только хорошие оценки
+        </button>
+
+        <button onclick="finishFinal()">
+            Когда никто никогда не спорит
+        </button>
+
+        <button onclick="finishFinal()">
+            Когда все одинаковые
+        </button>
+
+        <button onclick="finishFinal()">
+            Когда разные люди умеют поддерживать друг друга
+        </button>
+    </div>
+</section>
+
+
+<!-- ГЛАВНОЕ ПОЗДРАВЛЕНИЕ -->
+<section id="mainGreeting" class="screen">
+    <div class="card">
+        <h2>❤️ Главное поздравление</h2>
+
+        <p>
+            Спасибо Вам за каждый урок.
+        </p>
+
+        <p>
+            За терпение.<br>
+            За поддержку.<br>
+            За знания.<br>
+            За моменты, которые мы будем помнить.
+        </p>
+
+        <p>
+            Возможно, мы не всегда это показываем,
+            но Ваш труд действительно важен для нас.
+        </p>
+
+        <h2>С Днём учителя! ❤️</h2>
+
+        <button class="big-button" onclick="show('final')">
+            Завершить праздник
+        </button>
+    </div>
+</section>
+
+
+<!-- ФИНАЛ -->
+<section id="final" class="screen">
+    <div class="card">
+        <div class="subtitle">От всего 6 «К»</div>
+
+        <h1>Спасибо! ❤️</h1>
+
+        <p>
+            Этот праздник — для нашего учителя.
+        </p>
+
+        <div class="names">
+            <div class="name">Жангирхан</div>
+            <div class="name">Айбике</div>
+            <div class="name">Шернияз</div>
+            <div class="name">Мирас</div>
+            <div class="name">Сайида</div>
+            <div class="name">Айлин</div>
+        </div>
+
+        <p>
+            <b>6 «К» желает Вам счастья, здоровья,
+            терпения и побольше поводов нами гордиться!</b>
+        </p>
+
+        <button onclick="celebrate()">
+            🎉 Ещё раз поздравляем!
+        </button>
+
+        <p class="small">
+            Made by 6 «К»
+        </p>
+    </div>
+</section>
+
+
+<script>
+
+const questions = [
+
+{
+q: "На уроке появляется небольшая пауза. Задание уже почти закончено, напряжения нет. Кто скорее всего воспользуется моментом, чтобы завести разговор и узнать, что происходит у других?",
+a: ["Айлин", "Айбике", "Мирас", "Жангирхан"],
+correct: 0
+},
+
+{
+q: "Компания друзей предлагает провести небольшое соревнование после уроков. Кто из этих учеников наиболее естественно может заинтересоваться такой идеей, особенно если она связана с физической активностью?",
+a: ["Сайида", "Жангирхан", "Шернияз", "Айлин"],
+correct: 1
+},
+
+{
+q: "В разговоре появляется утверждение, которое звучит убедительно, но слишком категорично. Кто скорее всего не станет принимать его на веру, а начнёт искать другую сторону вопроса и приводить неожиданные аргументы?",
+a: ["Айлин", "Сайида", "Мирас", "Жангирхан"],
+correct: 2
+},
+
+{
+q: "Класс хочет сделать ко Дню учителя короткое видео. Кто вероятнее всего будет ориентироваться не только на саму идею, но и на то, какой формат сейчас выглядит актуально в TikTok?",
+a: ["Шернияз", "Мирас", "Айбике", "Сайида"],
+correct: 3
+},
+
+{
+q: "Во время групповой работы возникает спор. Один ученик может попытаться решить проблему так, чтобы никто не почувствовал себя униженным, даже если для этого придётся спокойно выслушать обе стороны. Кто наиболее подходит под это описание?",
+a: ["Жангирхан", "Шернияз", "Сайида", "Айлин"],
+correct: 1
+},
+
+{
+q: "Учитель ещё не сделал замечание, но несколько человек уже явно переходят грань по шуму. Кто скорее всего первым даст понять, что пора остановиться, даже если остальные продолжают?",
+a: ["Мирас", "Айлин", "Айбике", "Жангирхан"],
+correct: 2
+},
+
+{
+q: "Представим, что класс готовит поздравление учителю. Кто с наибольшей вероятностью заметит, что обычное поздравление можно сделать интереснее, добавив современный формат или тренд?",
+a: ["Айбике", "Сайида", "Шернияз", "Мирас"],
+correct: 1
+},
+
+{
+q: "После уроков появляется возможность выбрать между спокойным занятием и активной физической активностью. Какой выбор больше соответствует человеку, который любит борьбу и иногда может быть немного хулиганистым?",
+a: ["Айлин", "Жангирхан", "Шернияз", "Сайида"],
+correct: 1
+},
+
+{
+q: "В классе обсуждают какую-то историю. Один ученик не обязательно будет самым громким, но ему явно интересно поддержать разговор, задавать вопросы и продолжать общение. Кто больше всего подходит?",
+a: ["Мирас", "Айлин", "Айбике", "Шернияз"],
+correct: 1
+},
+
+{
+q: "Учителю нужно выбрать человека, которому можно доверить важную задачу, связанную с классом. При этом важна не только успеваемость, но и уважительное отношение к другим. Кто подходит лучше всего?",
+a: ["Жангирхан", "Мирас", "Шернияз", "Сайида"],
+correct: 2
+},
+
+{
+q: "Представьте: класс постепенно становится всё громче. Один человек старается сохранить спокойствие и порядок, но без лишней агрессии. Какой ученик больше всего соответствует этой роли?",
+a: ["Айлин", "Айбике", "Жангирхан", "Мирас"],
+correct: 1
+},
+
+{
+q: "Кто из учеников наиболее вероятно заметит небольшую деталь в разговоре или ситуации, которую остальные пропустили, и использует её, чтобы лучше разобраться в происходящем?",
+a: ["Сайида", "Жангирхан", "Айлин", "Мирас"],
+correct: 3
+},
+
+{
+q: "В классе начинается серьёзный шум. Один ученик старается спокойно восстановить порядок и не допустить конфликта, а другой быстро замечает шум и начинает требовать тишины. Какая пара лучше всего подходит?",
+a: [
+"Жангирхан + Айлин",
+"Шернияз + Айбике",
+"Мирас + Сайида",
+"Айлин + Сайида"
+],
+correct: 1
+},
+
+{
+q: "Учитель замечает, что кто-то из учеников расстроен или остался в стороне от остальных. Какая пара больше всего соответствует людям, которые способны заметить такое изменение и отреагировать?",
+a: [
+"Жангирхан + Айлин",
+"Шернияз + Мирас",
+"Айбике + Сайида",
+"Жангирхан + Сайида"
+],
+correct: 1
+}
+
+];
+
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+function show(id) {
+    document.querySelectorAll(".screen").forEach(s => {
+        s.classList.remove("active");
+    });
+
+    document.getElementById(id).classList.add("active");
+
+    window.scrollTo(0,0);
+}
+
+function showMessage(id) {
+    document.getElementById(id).classList.add("show");
+}
+
+function startQuiz() {
+    currentQuestion = 0;
+    score = 0;
+    document.getElementById("score").textContent = score;
+    show("quiz");
+    loadQuestion();
+}
+
+function loadQuestion() {
+
+    answered = false;
+
+    const item = questions[currentQuestion];
+
+    document.getElementById("questionNumber").textContent =
+        "Вопрос " + (currentQuestion + 1) + " из " + questions.length;
+
+    document.getElementById("progressBar").style.width =
+        ((currentQuestion) / questions.length * 100) + "%";
+
+    document.getElementById("question").textContent = item.q;
+
+    const answers = document.getElementById("answers");
+    answers.innerHTML = "";
+
+    document.getElementById("feedback").textContent = "";
+
+    document.getElementById("nextButton").style.display = "none";
+
+    item.a.forEach((answer, index) => {
+
+        const button = document.createElement("button");
+
+        button.className = "answer";
+        button.textContent = answer;
+
+        button.onclick = () => checkAnswer(index, button);
+
+        answers.appendChild(button);
+    });
+}
+
+function checkAnswer(index, button) {
+
+    if(answered) return;
+
+    answered = true;
+
+    const item = questions[currentQuestion];
+
+    const buttons = document.querySelectorAll(".answer");
+
+    buttons[item.correct].classList.add("correct");
+
+    if(index === item.correct) {
+
+        score += 100;
+
+        document.getElementById("score").textContent = score;
+
+        document.getElementById("feedback").textContent =
+            "✓ Верно! Вы действительно знаете свой класс.";
+
+    } else {
+
+        button.classList.add("wrong");
+
+        document.getElementById("feedback").textContent =
+            "✕ Не угадали! Но это был сложный вопрос.";
+
+    }
+
+    document.getElementById("nextButton").style.display = "inline-block";
+}
+
+function nextQuestion() {
+
+    currentQuestion++;
+
+    if(currentQuestion >= questions.length) {
+
+        document.getElementById("progressBar").style.width = "100%";
+
+        setTimeout(() => {
+            show("situations");
+        }, 200);
+
+        return;
+    }
+
+    loadQuestion();
+}
+
+
+/* СИТУАЦИЯ */
+
+let situationDone = false;
+
+function situationAnswer(correct) {
+
+    if(situationDone) return;
+
+    situationDone = true;
+
+    const result = document.getElementById("situationResult");
+
+    if(correct) {
+        score += 100;
+        document.getElementById("score").textContent = score;
+        result.textContent = "😂 Именно! Классическая школьная ситуация.";
+    } else {
+        result.textContent = "😄 Хорошая версия, но 6 «К» знает другой ответ.";
+    }
+
+    document.getElementById("situationNext").style.display = "inline-block";
+}
+
+function nextSituation() {
+    show("finalTest");
+}
+
+
+/* ФИНАЛ */
+
+function finishFinal() {
+
+    score += 100;
+
+    document.getElementById("score").textContent = score;
+
+    show("mainGreeting");
+
+    setTimeout(celebrate, 300);
+}
+
+
+/* КОНФЕТТИ */
+
+function celebrate() {
+
+    for(let i = 0; i < 45; i++) {
+
+        const piece = document.createElement("div");
+
+        piece.className = "confetti";
+
+        piece.style.left = Math.random() * 100 + "vw";
+
+        piece.style.background =
+            ["#c084fc","#f472b6","#60a5fa","#facc15","#34d399"]
+            [Math.floor(Math.random() * 5)];
+
+        piece.style.animationDelay =
+            Math.random() * .8 + "s";
+
+        piece.style.transform =
+            "rotate(" + Math.random() * 360 + "deg)";
+
+        document.body.appendChild(piece);
+
+        setTimeout(() => piece.remove(), 3500);
+    }
+
+    show("final");
+}
+
+</script>
+
+</body>
+</html>
